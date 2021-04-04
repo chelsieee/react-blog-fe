@@ -102,14 +102,14 @@ export const List = (props) => {
                 <CardActions className={classes.cardActions}>
                   <Box className={classes.author}>
                     <Avatar className={classes.purple}>
-                      {el.authorId.username.substring(0, 1).toUpperCase()}
+                      {el.author.substring(0, 1).toUpperCase()}
                     </Avatar>
                     <Box ml={2}>
                       <Typography variant="subtitle2" component="p">
-                        Author: {el.authorId.username}
+                        Author: {el.author}
                       </Typography>
                       <Typography variant="subtitle2" component="p">
-                        Category: {el.categoryId.tag}
+                        Category: {el.category}
                       </Typography>
                       <Typography
                         variant="subtitle2"

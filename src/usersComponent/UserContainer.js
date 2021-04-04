@@ -31,6 +31,7 @@ export const UserContainer = (props) => {
         console.log(user)
         console.log("user.data", user.data);
         props.setUsers({ isLoggin: true });
+        window.localStorage.setItem("userName", JSON.stringify(user.data.user.username))
         window.localStorage.setItem(
           "token",
           JSON.stringify(user.data.token)

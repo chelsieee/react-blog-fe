@@ -6,7 +6,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { Link, useHistory } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,13 +27,9 @@ export const NavBar = (props) => {
   const classes = useStyles();
 
   const handleLogout = () => {
-    axios
-      .get("/api/users/logout", { "Access-Control-Allow-Credentials": true })
-      .then((res) => {
         window.localStorage.clear();
         props.setUsers({ isLoggin: false });
         history.replace("/user/login");
-      });
   };
 
   const handleClick = (event) => {

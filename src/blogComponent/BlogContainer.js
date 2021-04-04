@@ -40,6 +40,9 @@ export const BlogContainer = (props) => {
     axios
       .get("http://localhost:3000/api/blogs", {
             "Access-Control-Allow-Credentials": true,
+            headers: {
+              'token':window.localStorage.getItem('token')
+            }
           })
       .then((res) => {
             console.log("blog Data:", res);
@@ -65,28 +68,36 @@ export const BlogContainer = (props) => {
   };
 
   const handleEditBlog = (blog) => {
-    console.log("handle edited blog:", blog);
+    let payload = {
+      title: blog.title,
+      content: blog.content,
+      category_id: blog.categoryId
+    }
     axios
       .patch(
-        `http://localhost:3000/api/blogs/update/${blog._id}`,
-        {
-          title: blog.title,
-          content: blog.content,
-          categoryId: blog.categoryId,
-        },
-        { "Access-Control-Allow-Credentials": true }
+        `http://localhost:3000/api/blogs/${blog.id}`, payload,
+        
+        { "Access-Control-Allow-Credentials": true,
+        headers: {
+          'token':window.localStorage.getItem('token')
+        } },
+       
       )
       .then((res) => {
         console.log("PUT res:", res.data);
         history.replace('/private')
         axios
-          .get("http://localhost:3000/api/blogs/all", {
+          .get("http://localhost:3000/api/blogs", {
             "Access-Control-Allow-Credentials": true,
+            headers: {
+              'token':window.localStorage.getItem('token')
+            }
           })
           .then((res) => {
             console.log("blog Data:", res);
             setBlogList(res.data);
           });
+
         axios
           .get("http://localhost:3000/api/blogs/myblog", {
             "Access-Control-Allow-Credentials": true,
@@ -96,20 +107,23 @@ export const BlogContainer = (props) => {
           })
           .then((res) => {
             console.log("blog Data:", res);
-            setPersonalBlogList(res.data["message"]);
+            setPersonalBlogList(res.data);
           });
       })
       .catch((err) => {
         console.log(err.response);
-        window.alert(err.response.data);
+        window.alert(err.response.data["message"]);
       });
   };
 
   const handleDeleteBlog = (blog) => {
     console.log("blog to be deleted:", blog._id);
     axios
-      .delete(`http://localhost:3000/api/blogs/delete/${blog._id}`, blog, {
+      .delete(`http://localhost:3000/api/blogs/delete/${blog.id}`, blog, {
         "Access-Control-Allow-Credentials": true,
+        headers: {
+          'token':window.localStorage.getItem('token')
+        }
       })
       .then((deletedBlog) => {
         console.log(deletedBlog);
@@ -124,9 +138,13 @@ export const BlogContainer = (props) => {
             console.log("Personal blog Data:", res);
             setPersonalBlogList(res.data);
           });
+
         axios
-          .get("http://localhost:3000/api/blogs/all", {
+          .get("http://localhost:3000/api/blogs", {
             "Access-Control-Allow-Credentials": true,
+            headers: {
+              'token':window.localStorage.getItem('token')
+            }
           })
           .then((res) => {
             console.log("blog Data:", res);
@@ -135,14 +153,17 @@ export const BlogContainer = (props) => {
       })
       .catch((err) => {
         console.log(err.response);
-        window.alert(err.response.data);
+        window.alert(err.response.data['message']);
       });
   };
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/blogs/all", {
+      .get("http://localhost:3000/api/blogs", {
         "Access-Control-Allow-Credentials": true,
+        headers: {
+          'token':window.localStorage.getItem('token')
+        }
       })
       .then((res) => {
         console.log("blog Data:", res);
