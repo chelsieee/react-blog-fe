@@ -110,16 +110,13 @@ export const BlogContainer = (props) => {
             setPersonalBlogList(res.data);
           });
       })
-      .catch((err) => {
-        console.log(err.response);
-        window.alert(err.response.data["message"]);
-      });
+  
   };
 
   const handleDeleteBlog = (blog) => {
-    console.log("blog to be deleted:", blog._id);
+    console.log("blog to be deleted:", blog.id);
     axios
-      .delete(`http://localhost:3000/api/blogs/delete/${blog.id}`, blog, {
+      .delete(`http://localhost:3000/api/blogs/${blog.id}`, {
         "Access-Control-Allow-Credentials": true,
         headers: {
           'token':window.localStorage.getItem('token')
@@ -151,10 +148,7 @@ export const BlogContainer = (props) => {
             setBlogList(res.data);
           });
       })
-      .catch((err) => {
-        console.log(err.response);
-        window.alert(err.response.data['message']);
-      });
+  
   };
 
   useEffect(() => {

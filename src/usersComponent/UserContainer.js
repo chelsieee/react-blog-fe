@@ -13,7 +13,7 @@ export const UserContainer = (props) => {
         "Access-Control-Allow-Credentials": true,
       })
       .then((res) => {
-        history.replace('/')
+        history.replace('/user/login')
        
       })
       .catch((err) => {
