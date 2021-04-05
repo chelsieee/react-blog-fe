@@ -9,6 +9,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Editor, EditorState, ContentState, convertToRaw} from "draft-js";
+import "draft-js/dist/Draft.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,7 +70,12 @@ export const EditBlog = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Edited blog:", blog);
-    props.submit(blog);
+    const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
+    const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
+    const newBlog ={...blog}
+    newBlog["content"]=value
+    console.log("New blog:", newBlog);
+    props.submit(newBlog);
   };
 
   useEffect(() => {
@@ -78,6 +85,14 @@ export const EditBlog = (props) => {
     setBlog(blogEdit);
   }, [props.blog]);
 
+  const [editorState, setEditorState] = React.useState(() =>
+    EditorState.createWithContent(ContentState.createFromText(props.blog.content))
+  );
+
+  const editor = React.useRef(null);
+  function focusEditor() {
+    editor.current.focus();
+  }
 
   return (
     <Grid
@@ -98,9 +113,7 @@ export const EditBlog = (props) => {
               <TextField
                 id="standard-full-width"
                 label="Title"
-                style={{ margin: 8 }}
                 placeholder="update your blog title"
-                helperText="what word best describe your day"
                 fullWidth
                 margin="normal"
                 InputLabelProps={{
@@ -110,21 +123,18 @@ export const EditBlog = (props) => {
                 value={blog.title}
                 onChange={handleChange}
               />
-              <TextField
-                id="standard-full-width"
-                label="Content"
-                style={{ margin: 8 }}
-                placeholder="type an updated event"
-                helperText="One thing you have made today"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                name="content"
-                value={blog.content}
-                onChange={handleChange}
+              
+              <div
+              style={{ border: "1px solid black", minHeight: "6em", cursor: "text" }}
+              onClick={focusEditor}
+            >
+              <Editor
+                ref={editor}
+                editorState={editorState}
+                onChange={setEditorState}
+                placeholder="Write something!"
               />
+            </div>
             </div>
           </CardContent>
           <CardContent>

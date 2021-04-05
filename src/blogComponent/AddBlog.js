@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -9,6 +9,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Editor, EditorState, convertToRaw} from "draft-js";
+import "draft-js/dist/Draft.css";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,13 +53,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const AddBlog = (props) => {
-  console.log(props);
   const classes = useStyles();
   const [blog, setBlog] = useState({
     title: "",
     content: "",
-    categoryId: props.categories[0].id,
+    categoryId: props.categories[0].id
   });
+
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
+
+  const editor = React.useRef(null);
+  function focusEditor() {
+    editor.current.focus();
+  }
 
   const handleChange = (e) => {
     const newBlog = { ...blog };
@@ -67,7 +78,14 @@ export const AddBlog = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("New blog:", blog);
-    props.submit(blog);
+    // const contentValue =editorState.getCurrentContent().getPlainText('\u0001')
+    const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
+    const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
+    console.log('value', value)
+    const newBlog ={...blog}
+    newBlog["content"]=value
+    console.log("New blog:", newBlog);
+    props.submit(newBlog);
   };
 
   return (
@@ -89,9 +107,7 @@ export const AddBlog = (props) => {
               <TextField
                 id="standard-full-width"
                 label="Title"
-                style={{ margin: 8 }}
                 placeholder="type your blog title"
-                helperText="what word best describe your day"
                 fullWidth
                 margin="normal"
                 InputLabelProps={{
@@ -101,22 +117,18 @@ export const AddBlog = (props) => {
                 onChange={handleChange}
                 name="title"
               />
-              <TextField
-                id="standard-full-width"
-                label="Content"
-                style={{ margin: 8 }}
-                placeholder="type a new event"
-                value={blog.content}
-                onChange={handleChange}
-                helperText="One thing you have made today"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                name="content"
+              <div
+               style={{ border: "1px solid black", minHeight: "6em", cursor: "text", fontSize: "1rem" }}
+               onClick={focusEditor}
+               >
+               <Editor
+                ref={editor}
+                editorState={editorState}
+                onChange={setEditorState}
+                placeholder="Write something!"
               />
-            </div>
+              </div>
+             </div>
           </CardContent>
           <CardContent>
             <FormControl className={classes.formControl}>
@@ -139,6 +151,7 @@ export const AddBlog = (props) => {
                 ))}
               </Select>
             </FormControl>
+         
             <Button
               type="submit"
               fullWidth
