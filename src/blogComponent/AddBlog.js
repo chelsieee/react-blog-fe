@@ -113,9 +113,10 @@ export const AddBlog = (props) => {
               />
               <Editor
         apiKey="2v6fp0mod1nvpcwwx9i2jl4ow8175gap9xvcehxhgjuw1a44"
-        //  initialValue="<p>type here</p>"
          init={{
-           height: 500,
+          selector: 'textarea',
+          placeholder: "Type content here...",
+          height: 500,
            menubar: false,
            plugins: [
              'advlist autolink lists link image charmap print preview anchor',
@@ -128,6 +129,7 @@ export const AddBlog = (props) => {
              bullist numlist outdent indent | removeformat | help'
          }}
          onEditorChange={handleEditorChange}
+         
        />
              </div>
           </CardContent>

@@ -78,7 +78,7 @@ export const EditBlog = (props) => {
     console.log("blog useEffect");
     console.log(props.blog);
     const blogEdit = { ...props.blog };
-    var text = blogEdit.content.replace(/<[^>]+>/g, '')
+    var text = blogEdit.content
     blogEdit["content"]= text
     setBlog(blogEdit);
     console.log(blogEdit);
@@ -123,7 +123,6 @@ export const EditBlog = (props) => {
               <Editor
         apiKey="2v6fp0mod1nvpcwwx9i2jl4ow8175gap9xvcehxhgjuw1a44"
           initialValue={blog.content}
-
          init={{
            height: 500,
            menubar: false,

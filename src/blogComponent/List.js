@@ -90,13 +90,7 @@ export const List = (props) => {
                     <Typography gutterBottom variant="h5" component="h2">
                       {el.title}
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                    >
-                      {el.content}
-                    </Typography>
+                    { <div dangerouslySetInnerHTML={{ __html: el.content}} /> }
                   </CardContent>
                 </CardActionArea>
                 <CardActions className={classes.cardActions}>
