@@ -14,6 +14,10 @@ import SaveIcon from "@material-ui/icons/Save";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Avatar from "@material-ui/core/Avatar";
 import moment from 'moment'
+import ReactMarkdown from 'react-markdown'
+import ReactMarkdownWithHTML from 'react-markdown/with-html'
+import {render} from 'react-dom'
+
 
 
 import { Link } from "react-router-dom";
@@ -95,13 +99,9 @@ export const PrivateList = (props) => {
                       <Typography gutterBottom variant="h5" component="h2">
                         {el.title}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        component="p"
-                      >
-                        {el.content}
-                      </Typography>
+                      <div>
+                      { <div dangerouslySetInnerHTML={{ __html: el.content}} /> }
+                      </div>
                     </CardContent>
                   </CardActionArea>
                   <CardActions className={classes.cardActions}>
