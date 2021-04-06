@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -9,6 +9,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Editor } from '@tinymce/tinymce-react';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,25 +52,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const AddBlog = (props) => {
-  console.log(props);
   const classes = useStyles();
   const [blog, setBlog] = useState({
     title: "",
     content: "",
-    categoryId: props.categories[0].id,
+    categoryId: props.categories[0].id
   });
 
   const handleChange = (e) => {
     const newBlog = { ...blog };
     newBlog[e.target.name] = e.target.value;
-    setBlog(newBlog);
+    console.log('newBlog', newBlog)
+    setBlog(newBlog)
+    console.log('handlechange', blog)
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("New blog:", blog);
-    props.submit(blog);
+    const newBlog ={...blog}
+    console.log("New blog:", newBlog);
+    props.submit(newBlog);
   };
+
+  const handleEditorChange = (content, editor) => {
+    console.log('Content was updated:', content);
+    blog.content =content
+    console.log("andleEditorChangeBlog", blog)
+  }
+
 
   return (
     <Grid
@@ -89,9 +101,7 @@ export const AddBlog = (props) => {
               <TextField
                 id="standard-full-width"
                 label="Title"
-                style={{ margin: 8 }}
                 placeholder="type your blog title"
-                helperText="what word best describe your day"
                 fullWidth
                 margin="normal"
                 InputLabelProps={{
@@ -101,22 +111,27 @@ export const AddBlog = (props) => {
                 onChange={handleChange}
                 name="title"
               />
-              <TextField
-                id="standard-full-width"
-                label="Content"
-                style={{ margin: 8 }}
-                placeholder="type a new event"
-                value={blog.content}
-                onChange={handleChange}
-                helperText="One thing you have made today"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                name="content"
-              />
-            </div>
+              <Editor
+        apiKey="2v6fp0mod1nvpcwwx9i2jl4ow8175gap9xvcehxhgjuw1a44"
+         init={{
+          selector: 'textarea',
+          placeholder: "Type content here...",
+          height: 500,
+           menubar: false,
+           plugins: [
+             'advlist autolink lists link image charmap print preview anchor',
+             'searchreplace visualblocks code fullscreen',
+             'insertdatetime media table paste code help wordcount'
+           ],
+           toolbar:
+             'undo redo | formatselect | bold italic backcolor | \
+             alignleft aligncenter alignright alignjustify | \
+             bullist numlist outdent indent | removeformat | help'
+         }}
+         onEditorChange={handleEditorChange}
+         
+       />
+             </div>
           </CardContent>
           <CardContent>
             <FormControl className={classes.formControl}>
@@ -139,6 +154,7 @@ export const AddBlog = (props) => {
                 ))}
               </Select>
             </FormControl>
+         
             <Button
               type="submit"
               fullWidth

@@ -9,6 +9,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Editor } from '@tinymce/tinymce-react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,16 +69,26 @@ export const EditBlog = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Edited blog:", blog);
-    props.submit(blog);
+    const newBlog ={...blog}
+    console.log("New blog:", newBlog);
+    props.submit(newBlog);
   };
 
   useEffect(() => {
     console.log("blog useEffect");
     console.log(props.blog);
     const blogEdit = { ...props.blog };
+    var text = blogEdit.content
+    blogEdit["content"]= text
     setBlog(blogEdit);
+    console.log(blogEdit);
   }, [props.blog]);
 
+  const handleEditorChange = (content, editor) => {
+    console.log('Content was updated:', content);
+    blog.content =content
+    console.log("andleEditorChangeBlog", blog)
+  }
 
   return (
     <Grid
@@ -98,9 +109,7 @@ export const EditBlog = (props) => {
               <TextField
                 id="standard-full-width"
                 label="Title"
-                style={{ margin: 8 }}
                 placeholder="update your blog title"
-                helperText="what word best describe your day"
                 fullWidth
                 margin="normal"
                 InputLabelProps={{
@@ -110,21 +119,26 @@ export const EditBlog = (props) => {
                 value={blog.title}
                 onChange={handleChange}
               />
-              <TextField
-                id="standard-full-width"
-                label="Content"
-                style={{ margin: 8 }}
-                placeholder="type an updated event"
-                helperText="One thing you have made today"
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                name="content"
-                value={blog.content}
-                onChange={handleChange}
-              />
+              <div>
+              <Editor
+        apiKey="2v6fp0mod1nvpcwwx9i2jl4ow8175gap9xvcehxhgjuw1a44"
+          initialValue={blog.content}
+         init={{
+           height: 500,
+           menubar: false,
+           plugins: [
+             'advlist autolink lists link image charmap print preview anchor',
+             'searchreplace visualblocks code fullscreen',
+             'insertdatetime media table paste code help wordcount'
+           ],
+           toolbar:
+             'undo redo | formatselect | bold italic backcolor | \
+             alignleft aligncenter alignright alignjustify | \
+             bullist numlist outdent indent | removeformat | help'
+         }}
+         onEditorChange={handleEditorChange}
+       />
+              </div>
             </div>
           </CardContent>
           <CardContent>
