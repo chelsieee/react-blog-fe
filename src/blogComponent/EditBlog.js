@@ -9,8 +9,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { Editor, EditorState, ContentState, convertToRaw} from "draft-js";
-import "draft-js/dist/Draft.css";
+import { Editor } from '@tinymce/tinymce-react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,10 +69,7 @@ export const EditBlog = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Edited blog:", blog);
-    const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
-    const value = blocks.map(block => (!block.text.trim() && '\n') || block.text).join('\n');
     const newBlog ={...blog}
-    newBlog["content"]=value
     console.log("New blog:", newBlog);
     props.submit(newBlog);
   };
@@ -82,16 +78,16 @@ export const EditBlog = (props) => {
     console.log("blog useEffect");
     console.log(props.blog);
     const blogEdit = { ...props.blog };
+    var text = blogEdit.content.replace(/<[^>]+>/g, '')
+    blogEdit["content"]= text
     setBlog(blogEdit);
+    console.log(blogEdit);
   }, [props.blog]);
 
-  const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createWithContent(ContentState.createFromText(props.blog.content))
-  );
-
-  const editor = React.useRef(null);
-  function focusEditor() {
-    editor.current.focus();
+  const handleEditorChange = (content, editor) => {
+    console.log('Content was updated:', content);
+    blog.content =content
+    console.log("andleEditorChangeBlog", blog)
   }
 
   return (
@@ -123,18 +119,27 @@ export const EditBlog = (props) => {
                 value={blog.title}
                 onChange={handleChange}
               />
-              
-              <div
-              style={{ border: "1px solid black", minHeight: "6em", cursor: "text" }}
-              onClick={focusEditor}
-            >
+              <div>
               <Editor
-                ref={editor}
-                editorState={editorState}
-                onChange={setEditorState}
-                placeholder="Write something!"
-              />
-            </div>
+        apiKey="2v6fp0mod1nvpcwwx9i2jl4ow8175gap9xvcehxhgjuw1a44"
+          initialValue={blog.content}
+
+         init={{
+           height: 500,
+           menubar: false,
+           plugins: [
+             'advlist autolink lists link image charmap print preview anchor',
+             'searchreplace visualblocks code fullscreen',
+             'insertdatetime media table paste code help wordcount'
+           ],
+           toolbar:
+             'undo redo | formatselect | bold italic backcolor | \
+             alignleft aligncenter alignright alignjustify | \
+             bullist numlist outdent indent | removeformat | help'
+         }}
+         onEditorChange={handleEditorChange}
+       />
+              </div>
             </div>
           </CardContent>
           <CardContent>
