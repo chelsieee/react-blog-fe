@@ -35,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     marginBottom: theme.spacing(3),
     marginLeft: theme.spacing(1),
-    minWidth: 150,
+    minWidth: 500,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
   form: {
-    maxWidth: "50%",
+    maxWidth: "80%",
     minHeight: "20vh",
     display: "flex",
     alignItems: "center",
